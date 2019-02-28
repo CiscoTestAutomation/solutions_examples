@@ -1,6 +1,6 @@
 # Robot comparison 
 
-Take a look at the [katacoda example](https://www.katacoda.com/jeaubin/scenarios/robot) to see this
+Take a look at the [katacoda example](https://www.katacoda.com/jeaubin/scenarios/compare) to see this
 solution in action!
 
 To run this on your own network do the following:
