@@ -1,0 +1,311 @@
+# Master PTS File for Genie
+# #########################
+
+ospf:
+    source:
+        pkg: genie.libs.ops
+        class: ospf.ospf.Ospf
+    devices: ['leaf1','leaf2']
+    exclude:
+        - age
+        - uptime
+        - last_change
+        - cksum
+        - seq
+        - dead_timer
+        - hello_timer
+        - checksum
+        - seq_num
+        - statistics
+        - lsas
+        - last_state_change
+        - bdr_ip_addr
+        - dr_ip_addr
+        - state
+        - bdr_router_id
+        - dr_router_id
+
+hsrp:
+    source:
+        pkg: genie.libs.ops
+        class: hsrp.hsrp.Hsrp
+    devices: ['leaf1','leaf2']
+
+vlan:
+    source:
+        pkg: genie.libs.ops
+        class: vlan.vlan.Vlan
+    devices: ['leaf1','leaf2']
+
+platform:
+    source:
+        pkg: genie.libs.ops
+        class: platform.platform.Platform
+    devices: ['leaf1','leaf2']
+    exclude:
+        - rp_uptime
+        - disk_free_space
+        - uptime
+        - switchover_reason
+        - disk_used_space
+        - total_free_bytes
+        - disk_total_space
+        - main_mem
+        - date
+        - index
+        - chassis_sn
+        - image
+        - sn
+        - rp_boot_image
+        - installed_packages
+
+bgp:
+    source:
+        pkg: genie.libs.ops
+        class: bgp.bgp.Bgp
+    devices: ['leaf1','leaf2']
+    exclude:
+        - if_handle
+        - keepalives
+        - last_reset
+        - reset_reason
+        - foreign_port
+        - local_port
+        - msg_rcvd
+        - msg_sent
+        - up_down
+        - bgp_table_version
+        - routing_table_version
+        - tbl_ver
+        - table_version
+        - memory_usage
+        - updates
+        - mss
+        - total
+        - total_bytes
+        - up_time
+        - bgp_negotiated_keepalive_timers
+        - hold_time
+        - keepalive_interval
+        - sent
+        - received
+        - status_codes
+        - holdtime
+        - router_id
+        - connections_dropped
+        - connections_established
+        - advertised
+        - prefixes
+        - routes
+        - state_pfxrcd
+
+interface:
+    source:
+        pkg: genie.libs.ops
+        class: interface.interface.Interface
+    devices: ['leaf1','leaf2']
+    exclude:
+        - in_discards
+        - in_octets
+        - in_pkts
+        - last_clear
+        - out_octets
+        - out_pkts
+        - in_rate
+        - out_rate
+        - in_errors
+        - in_crc_errors
+        - in_rate_pkts
+        - out_rate_pkts
+        - in_broadcast_pkts
+        - out_broadcast_pkts
+        - in_multicast_pkts
+        - out_multicast_pkts
+        - in_unicast_pkts
+        - out_unicast_pkts
+        - last_change
+        - mac_address
+        - phys_address
+        - ((t|T)unnel.*)
+        - (Null.*)
+        - chars_out
+        - chars_in
+        - pkts_out
+        - pkts_in
+        - mgmt0
+
+mcast:
+    source:
+        pkg: genie.libs.ops
+        class: mcast.mcast.Mcast
+    devices: ['leaf1','leaf2']
+    exclude:
+        - expire
+        - uptime
+        - flags
+        - incoming_interface_list
+
+pim:
+    source:
+        pkg: genie.libs.ops
+        class: pim.pim.Pim
+    devices: ['leaf1','leaf2']
+    exclude:
+        - expiration
+        - hello_expiration
+        - hello_interval
+        - up_time
+        - bsr_next_bootstrap
+        - expires
+        - rp_candidate_next_advertisement
+        - genid
+        - df_address
+        - gen_id
+        - incoming_interface
+        - rpf_neighbor
+
+prefix_list:
+    source:
+        pkg: genie.libs.ops
+        class: prefix_list.prefix_list.PrefixList
+    devices: ['leaf1','leaf2']
+
+vrf:
+    source:
+        pkg: genie.libs.ops
+        class: vrf.vrf.Vrf
+    devices: ['leaf1','leaf2']
+
+mld:
+    source:
+        pkg: genie.libs.ops
+        class: mld.mld.Mld
+    exclude:
+        - expire
+        - up_time
+        - last_reporter
+    devices: ['leaf1','leaf2']
+
+route_policy:
+    source:
+        pkg: genie.libs.ops
+        class: route_policy.route_policy.RoutePolicy
+    devices: ['leaf1','leaf2']
+
+igmp:
+    source:
+        pkg: genie.libs.ops
+        class: igmp.igmp.Igmp
+    devices: ['leaf1','leaf2']
+    exclude:
+        - expire
+        - up_time
+stp:
+    source:
+        pkg: genie.libs.ops
+        class: stp.stp.Stp
+    devices: ['leaf1','leaf2']
+
+static_routing:
+    source:
+        pkg: genie.libs.ops
+        class: static_routing.static_routing.StaticRoute
+    devices: ['leaf1','leaf2']
+
+routing:
+    source:
+        pkg: genie.libs.ops
+        class: routing.routing.Routing
+    devices: ['leaf1','leaf2']
+lldp:
+    source:
+        pkg: genie.libs.ops
+        class: lldp.lldp.Lldp
+    devices: ['leaf1','leaf2']
+
+vxlan:
+    source:
+        pkg: genie.libs.ops
+        class: vxlan.vxlan.Vxlan
+    devices: ['leaf1','leaf2']
+    exclude:
+        - bytesrecvd
+        - bytessent
+        - capabilitiesrecvd
+        - capabilitiessent
+        - connsdropped
+        - connsestablished
+        - elapsedtime
+        - fd
+        - keepalive
+        - keepaliverecvd
+        - keepalivesent
+        - lastread
+        - lastwrite
+        - msgrecvd
+        - msgsent
+        - neighbortableversion
+        - notificationssent
+        - opensrecvd
+        - openssent
+        - tableversion
+        - remoteport
+        - rtrefreshsent
+        - updatesrecvd
+        - updatessent
+        - prefixversion
+        - tx_id
+        - uptime
+        - up_time
+        - localport
+        - resetreason
+        - resettime
+        - client_nfn
+        - pathnr
+        - bestpathnr
+        - peer_id
+        - bytesattrs
+        - memoryused
+        - prefixreceived
+        - numberattrs
+        - advertisedto
+        - totalnetworks
+        - totalpaths
+        - flags
+        - index
+        - total_mem
+        - memory
+        - total_memory
+        - mac
+        - mac_ip
+        - oif_index
+        - (0.0.0.0.*)
+        - prefix
+        - objects
+        - total_obj
+        - table_version
+        - l2_oiflist_index
+        - num_of_oifs
+        - oifs
+
+msdp:
+    source:
+        pkg: genie.libs.ops
+        class: msdp.msdp.Msdp
+    devices: ['leaf1','leaf2']
+    exclude:
+        - statistics
+        - elapsed_time
+        - up_time
+        - expire
+
+ntp:
+    source:
+        pkg: genie.libs.ops
+        class: ntp.ntp.Ntp
+    devices: ['leaf1','leaf2']
+    exclude:
+        - root_delay
+        - delay
+        - root_dispersion
+        - receive_time

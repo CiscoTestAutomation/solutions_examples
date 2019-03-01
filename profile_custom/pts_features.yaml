@@ -1,0 +1,12 @@
+features:
+  # - ospf
+  # - bgp
+  # - vxlan
+  # - vlan
+  # - platform
+  - interface
+  # - pim
+  # - igmp
+  # - static_routing
+  # - ntp
+  - hsrp

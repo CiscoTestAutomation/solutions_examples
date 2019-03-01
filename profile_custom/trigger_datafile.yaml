@@ -1,0 +1,6 @@
+extends: '%ENV{VIRTUAL_ENV}/genie_yamls/trigger_datafile.yaml'
+
+RunAnsiblePlaybook:
+    source:
+      class: libs.genie.ansible.RunAnsiblePlaybook
+    devices: ['uut']

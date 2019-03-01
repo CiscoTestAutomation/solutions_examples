@@ -1,0 +1,6 @@
+extends: '%ENV{VIRTUAL_ENV}/genie_yamls/subsection_datafile.yaml'
+
+setup:
+    order: ['connect']
+cleanup:
+    order: []

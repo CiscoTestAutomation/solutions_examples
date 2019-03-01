@@ -1,0 +1,6 @@
+devices:
+  cmhlab-core1:
+   context: cli
+   label: uut
+   mapping:
+      cli: console

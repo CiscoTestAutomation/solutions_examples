@@ -1,0 +1,5 @@
+snapshots/*
+reports/*
+pts
+*.html
+*.pts
