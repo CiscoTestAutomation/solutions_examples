@@ -11,8 +11,8 @@ challenges.
 
 ##### Installation
 ```
-git clone https://github.com/kecorbin/pyats-network-checks
-cd pyats-network-checks
+git clone https://github.com/CiscoTestAutomation/solutions_examples.git
+cd solutions_examples
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -34,3 +34,5 @@ sample topology.  you'll likely need to change it to match your devices
 * #### [bgp_adjacencies](./bgp_adjacencies) - "if a neighbor is configured, it should be established"
 
 * #### [crc_errors](./crc_errors) - "No interface should be accumulating CRC errors"
+
+* #### [hostname_checker](./hostname_checker) - "Verify devices hostname with Testbed file names"
