@@ -91,7 +91,7 @@ class BGP_Neighbors_Established(aetest.Testcase):
                     tr.append(device)
                     tr.append(nbr)
                     tr.append(state)
-                    if state == 'established':
+                    if state.lower() == 'established':
                         tr.append('Passed')
                     else:
                         failed_dict[device] = {}
