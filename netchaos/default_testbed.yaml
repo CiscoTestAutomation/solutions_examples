@@ -1,0 +1,243 @@
+testbed:
+
+  name: PRODUCTION
+
+  tacacs:
+      username: "cisco"
+  passwords:
+      tacacs: "cisco"
+      enable: "cisco"
+      line: "cisco"
+
+devices:
+
+  spine1:
+    alias: spine1
+    os: nxos
+    type: NX-OSv 9000
+    connections:
+
+      defaults:
+        class: unicon.Unicon
+      ssh:
+        ip: 10.94.242.167
+        protocol: ssh
+    custom:
+      abstraction:
+        order: [os, type]
+
+  spine2:
+    alias: spine2
+    os: nxos
+    type: NX-OSv 9000
+    connections:
+
+      defaults:
+        class: unicon.Unicon
+      ssh:
+        ip: 10.94.242.168
+        protocol: ssh
+    custom:
+      abstraction:
+        order: [os, type]
+
+  leaf1:
+    alias: leaf1
+    os: nxos
+    type: NX-OSv 9000
+    connections:
+
+      defaults:
+        class: unicon.Unicon
+      ssh:
+        ip: 10.94.242.170
+        protocol: ssh
+    custom:
+      abstraction:
+        order: [os, type]
+
+  leaf2:
+    alias: leaf2
+    os: nxos
+    type: NX-OSv 9000
+    connections:
+
+      defaults:
+        class: unicon.Unicon
+      ssh:
+        ip: 10.94.242.175
+        protocol: ssh
+    custom:
+      abstraction:
+        order: [os, type]
+
+  leaf3:
+    alias: uut
+    os: nxos
+    type: NX-OSv 9000
+    connections:
+
+      defaults:
+        class: unicon.Unicon
+      ssh:
+        ip: 10.94.242.176
+        protocol: ssh
+    custom:
+      abstraction:
+        order: [os, type]
+
+
+  leaf4:
+    alias: leaf4
+    os: nxos
+    type: NX-OSv 9000
+    connections:
+
+      defaults:
+        class: unicon.Unicon
+      ssh:
+        ip: 10.94.242.177
+        protocol: ssh
+    custom:
+      abstraction:
+        order: [os, type]
+
+
+
+topology:
+  spine1:
+    interfaces:
+      Ethernet1/2:
+        ipv4: 10.0.0.14/30
+        link: leaf2-to-spine1
+        type: ethernet
+      Ethernet1/1:
+        ipv4: 10.0.0.6/30
+        link: leaf1-to-spine1
+        type: ethernet
+      Ethernet1/4:
+        ipv4: 10.0.0.22/30
+        link: leaf4-to-spine1
+        type: ethernet
+      Ethernet1/3:
+        ipv4: 10.0.0.18/30
+        link: leaf3-to-spine1
+        type: ethernet
+      mgmt0:
+        ipv4: 10.94.242.178/27
+        link: flat
+        type: ethernet
+  leaf4:
+    interfaces:
+      mgmt0:
+        ipv4: 10.94.242.173/27
+        link: flat
+        type: ethernet
+      Ethernet1/2:
+        ipv4: 10.0.0.33/30
+        link: leaf4-to-spine2
+        type: ethernet
+      Ethernet1/1:
+        ipv4: 10.0.0.21/30
+        link: leaf4-to-spine1
+        type: ethernet
+      Ethernet1/4:
+        link: leaf3-to-leaf4#1
+        type: ethernet
+      Ethernet1/3:
+        link: leaf3-to-leaf4
+        type: ethernet
+      Ethernet1/5:
+        link: leaf4-to-server4
+        type: ethernet
+  spine2:
+    interfaces:
+      Ethernet1/2:
+        ipv4: 10.0.0.26/30
+        link: leaf2-to-spine2
+        type: ethernet
+      Ethernet1/1:
+        ipv4: 10.0.0.10/30
+        link: leaf1-to-spine2
+        type: ethernet
+      Ethernet1/4:
+        ipv4: 10.0.0.34/30
+        link: leaf4-to-spine2
+        type: ethernet
+      Ethernet1/3:
+        ipv4: 10.0.0.30/30
+        link: leaf3-to-spine2
+        type: ethernet
+      mgmt0:
+        ipv4: 10.94.242.179/27
+        link: flat
+        type: ethernet
+  leaf1:
+    interfaces:
+      mgmt0:
+        ipv4: 10.94.242.170/27
+        link: flat
+        type: ethernet
+      Ethernet1/2:
+        ipv4: 10.0.0.9/30
+        link: leaf1-to-spine2
+        type: ethernet
+      Ethernet1/1:
+        ipv4: 10.0.0.5/30
+        link: leaf1-to-spine1
+        type: ethernet
+      Ethernet1/4:
+        link: leaf1-to-leaf2#1
+        type: ethernet
+      Ethernet1/3:
+        link: leaf1-to-leaf2
+        type: ethernet
+      Ethernet1/5:
+        link: leaf1-to-server1
+        type: ethernet
+  leaf3:
+    interfaces:
+      mgmt0:
+        ipv4: 10.94.242.172/27
+        link: flat
+        type: ethernet
+      Ethernet1/2:
+        ipv4: 10.0.0.29/30
+        link: leaf3-to-spine2
+        type: ethernet
+      Ethernet1/1:
+        ipv4: 10.0.0.17/30
+        link: leaf3-to-spine1
+        type: ethernet
+      Ethernet1/4:
+        link: leaf3-to-leaf4#1
+        type: ethernet
+      Ethernet1/3:
+        link: leaf3-to-leaf4
+        type: ethernet
+      Ethernet1/5:
+        link: leaf3-to-server3
+        type: ethernet
+  leaf2:
+    interfaces:
+      mgmt0:
+        ipv4: 10.94.242.171/27
+        link: flat
+        type: ethernet
+      Ethernet1/2:
+        ipv4: 10.0.0.25/30
+        link: leaf2-to-spine2
+        type: ethernet
+      Ethernet1/1:
+        ipv4: 10.0.0.13/30
+        link: leaf2-to-spine1
+        type: ethernet
+      Ethernet1/4:
+        link: leaf1-to-leaf2#1
+        type: ethernet
+      Ethernet1/3:
+        link: leaf1-to-leaf2
+        type: ethernet
+      Ethernet1/5:
+        link: leaf2-to-server2
+        type: ethernet

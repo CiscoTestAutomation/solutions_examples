@@ -1,0 +1,12 @@
+devices:
+  leaf1:
+   context: cli
+   label: uut
+   mapping:
+      cli: ssh
+
+
+  leaf2:
+   context: cli
+   mapping:
+      cli: ssh
