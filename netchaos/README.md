@@ -2,6 +2,8 @@
 
 Proof of concept Network Chaos Monkey using Cisco VIRL, pyATS, and Genie
 
+> Author: Kevin Corbin @kecorbin
+
 # Requirements
 
 pyATS requires python3 make sure you've installed the requirements in your virtualenv
