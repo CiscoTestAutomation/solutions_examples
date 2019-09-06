@@ -6,5 +6,9 @@ if an interface has CRC errors, the test case fails.
 # Running
 
 ```
-easypy CRC_check_job.py -html_logs -testbed_file ../default_testbed.yaml
+pyats run job CRC_check_job.py -html_logs -testbed_file ../default_testbed.yaml
 ```
+
+
+# To use the Mock device
+pyats run job CRC_check_job.py -html_logs -testbed_file ../default_testbed.yaml  --replay mock
