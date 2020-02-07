@@ -1,0 +1,35 @@
+devices:
+  csr1000v-1:
+    alias: csr1000v-1
+    connections:
+      ssh:
+        ip: 172.16.21.88
+        protocol: ssh
+        proxy: jump_host
+    credentials:
+      default:
+        password: cisco
+        username: cisco
+      enable:
+        password: cisco
+    custom:
+      abstraction:
+        order:
+        - os
+        - platform
+    os: iosxe
+    platform: iosxe
+    type: CSR1000v
+
+  jump_host:
+    connections:
+      cli:
+        ip: 172.25.192.134
+        port: 22
+        protocol: ssh
+    credentials:
+      default:
+        password: VIRL
+        username: virl
+    os: linux
+    type: linux
