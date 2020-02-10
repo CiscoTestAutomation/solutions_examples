@@ -11,11 +11,8 @@ from ats import aetest
 from ats.log.utils import banner
 
 # Genie Imports
-from genie.conf import Genie
-from genie.abstract import Lookup
+from genie.testbed import load
 
-# import the genie libs
-from genie.libs import ops # noqa
 
 # Get your logger for your script
 log = logging.getLogger(__name__)
@@ -28,50 +25,43 @@ log = logging.getLogger(__name__)
 class common_setup(aetest.CommonSetup):
     """ Common Setup section """
 
-    # CommonSetup have subsection.
-    # You can have 1 to as many subsection as wanted
-
     # Connect to each device in the testbed
     @aetest.subsection
     def connect(self, testbed):
-        genie_testbed = Genie.init(testbed)
+        genie_testbed = load(testbed)
         self.parent.parameters['testbed'] = genie_testbed
         device_list = []
         for device in genie_testbed.devices.values():
             log.info(banner(
-                "Connect to device '{d}'".format(d=device.name)))
+                f"Connect to device '{device.name}'"))
             try:
                 device.connect()
             except Exception as e:
-                self.failed("Failed to establish connection to '{}'".format(
-                    device.name))
+                self.failed(f"Failed to establish connection to '{device.name}'")
 
             device_list.append(device)
 
         # Pass list of devices the to testcases
         self.parent.parameters.update(dev=device_list)
+        print(self.parent.parameters)
 
 
 ###################################################################
 #                     TESTCASES SECTION                           #
 ###################################################################
 
-# Testcase name : vxlan_consistency_check
+# Testcase name : Check for CRC errors
 class CRC_count_check(aetest.Testcase):
     """ This is user Testcases section """
 
     # First test section
     @ aetest.test
     def learn_interfaces(self):
-        """ Sample test section. Only print """
 
         self.all_interfaces = {}
         for dev in self.parent.parameters['dev']:
-            log.info(banner("Gathering Interface Information from {}".format(
-                dev.name)))
-            abstract = Lookup.from_device(dev)
-            intf = abstract.ops.interface.interface.Interface(dev)
-            intf.learn()
+            log.info(banner(f"Gathering Interface Information from {dev.name}"))
+            intf = dev.learn('interface')
             self.all_interfaces[dev.name] = intf.info
 
     # Second test section
@@ -114,8 +104,7 @@ class CRC_count_check(aetest.Testcase):
         for dev in mega_dict:
             for intf in mega_dict[dev]:
                 if mega_dict[dev][intf]:
-                    self.failed("{d}: {name} CRC ERRORS: {e}".format(
-                        d=dev, name=intf, e=mega_dict[dev][intf]))
+                    self.failed(f"{dev}: {intf} CRC ERRORS: {mega_dict[dev][intf]}")
 
         self.passed("All devices' interfaces CRC ERRORS Count is: 'Zero'")
 
@@ -135,10 +124,16 @@ class common_cleanup(aetest.CommonCleanup):
     # You can have 1 to as many subsections as wanted
     # here is an example of 1 subsection
 
+    # @aetest.subsection
+    # def clean_everything(self):
+    #     """ Common Cleanup Subsection """
+    #     log.info("Aetest Common Cleanup ")
     @aetest.subsection
-    def clean_everything(self):
-        """ Common Cleanup Subsection """
-        log.info("Aetest Common Cleanup ")
+
+    def disconnect(self):
+        log.info("Aetest Common Cleanup disconnecting devices")
+        for dev in self.parent.parameters['dev']:
+            dev.disconnect()
 
 
 if __name__ == '__main__':  # pragma: no cover
