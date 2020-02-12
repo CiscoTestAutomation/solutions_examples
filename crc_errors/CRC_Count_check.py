@@ -7,19 +7,15 @@ import logging
 from tabulate import tabulate
 
 # Needed for aetest script
-from ats import aetest
-from ats.log.utils import banner
+from pyats import aetest
+from pyats.log.utils import banner
 
 # Genie Imports
-from genie.conf import Genie
-from genie.abstract import Lookup
+from genie.testbed import load
 
-# import the genie libs
-from genie.libs import ops # noqa
 
 # Get your logger for your script
 log = logging.getLogger(__name__)
-
 
 ###################################################################
 #                  COMMON SETUP SECTION                           #
@@ -28,96 +24,108 @@ log = logging.getLogger(__name__)
 class common_setup(aetest.CommonSetup):
     """ Common Setup section """
 
-    # CommonSetup have subsection.
-    # You can have 1 to as many subsection as wanted
-
     # Connect to each device in the testbed
     @aetest.subsection
     def connect(self, testbed):
-        genie_testbed = Genie.init(testbed)
+        genie_testbed = load(testbed)
         self.parent.parameters['testbed'] = genie_testbed
         device_list = []
         for device in genie_testbed.devices.values():
             log.info(banner(
-                "Connect to device '{d}'".format(d=device.name)))
+                f"Connect to device '{device.name}'"))
             try:
                 device.connect()
+                device_list.append(device)
             except Exception as e:
-                self.failed("Failed to establish connection to '{}'".format(
-                    device.name))
+                log.info(f"Failed to establish connection to '{device.name}'")
 
-            device_list.append(device)
-
-        # Pass list of devices the to testcases
         self.parent.parameters.update(dev=device_list)
+        log.debug(self.parent.parameters)
+
+    @aetest.subsection
+    def create_testcases(self):
+        #below creates a loop over the CRC_count_Check Class using dev as the iterator
+        aetest.loop.mark(CRC_count_Check, dev=self.parent.parameters['dev'])
+
 
 
 ###################################################################
 #                     TESTCASES SECTION                           #
 ###################################################################
 
-# Testcase name : vxlan_consistency_check
-class CRC_count_check(aetest.Testcase):
-    """ This is user Testcases section """
+#Capture Interfaces statistics on the device and tabulate
+#Also look for CRC Errors. If CRC Errors fail then change
+#variable 'passing' from 0 to 1
+class CRC_count_Check(aetest.Testcase):
+    @aetest.setup
+    def setup(self, dev):
+        #Setup has been marked for looping in Common Setup(create_testcases) with the argument dev
+        #dev is the list of devices in the current testbed
+        self.dev = dev
+        log.info(banner(f"Gathering Interface Information from {dev.name}"))
+        self.interface_info = dev.learn('interface')
 
-    # First test section
-    @ aetest.test
-    def learn_interfaces(self):
-        """ Sample test section. Only print """
+        list_of_interfaces=self.interface_info.info.keys()
+        self.mega_dict = {}
+        self.mega_dict[dev.name] = {}
+        self.mega_tabular = []
+        self.passing=0
 
-        self.all_interfaces = {}
-        for dev in self.parent.parameters['dev']:
-            log.info(banner("Gathering Interface Information from {}".format(
-                dev.name)))
-            abstract = Lookup.from_device(dev)
-            intf = abstract.ops.interface.interface.Interface(dev)
-            intf.learn()
-            self.all_interfaces[dev.name] = intf.info
 
-    # Second test section
-    @ aetest.test
-    def check_CRC(self):
-
-        mega_dict = {}
-        mega_tabular = []
-        for device, ints in self.all_interfaces.items():
-            mega_dict[device] = {}
-            for name, props in ints.items():
-                counters = props.get('counters')
-                if counters:
-                    smaller_tabular = []
-                    if 'in_crc_errors' in counters:
-                        mega_dict[device][name] = counters['in_crc_errors']
-                        smaller_tabular.append(device)
-                        smaller_tabular.append(name)
-                        smaller_tabular.append(str(counters['in_crc_errors']))
-                        if counters['in_crc_errors']:
-                            smaller_tabular.append('Failed')
-                        else:
-                            smaller_tabular.append('Passed')
+        for ints, props in self.interface_info.info.items():
+            counters = props.get('counters')
+            if counters:
+                smaller_tabular = []
+                if 'in_crc_errors' in counters:
+                    self.mega_dict[dev.name][ints] = counters['in_crc_errors']
+                    smaller_tabular.append(dev.name)
+                    smaller_tabular.append(ints)
+                    smaller_tabular.append(str(counters['in_crc_errors']))
+                    if counters['in_crc_errors']:
+                        smaller_tabular.append('Failed')
+                        self.passing=1
                     else:
-                        mega_dict[device][name] = None
-                        smaller_tabular.append(device)
-                        smaller_tabular.append(name)
-                        smaller_tabular.append('N/A')
-                        smaller_tabular.append('N/A')
-                mega_tabular.append(smaller_tabular)
+                        smaller_tabular.append('Passed')
 
-        mega_tabular.append(['-'*sum(len(i) for i in smaller_tabular)])
+                else:
+                    self.mega_dict[dev.name][ints] = None
+                    smaller_tabular.append(dev.name)
+                    smaller_tabular.append(ints)
+                    smaller_tabular.append('N/A')
+                    smaller_tabular.append('N/A')
+            self.mega_tabular.append(smaller_tabular)
+        self.mega_tabular.append(['-' * sum(len(i) for i in smaller_tabular)])
 
-        log.info(tabulate(mega_tabular,
+
+        aetest.loop.mark(self.interface_check, intf=list_of_interfaces)
+
+# create table and display. Test fails if variable 'passing' = 1.
+# which means there are some CRC errors
+    @aetest.test
+    def table_display(self):
+        log.info(tabulate(self.mega_tabular,
                           headers=['Device', 'Interface',
                                    'CRC Errors Counter',
                                    'Passed/Failed'],
                           tablefmt='orgtbl'))
 
-        for dev in mega_dict:
-            for intf in mega_dict[dev]:
-                if mega_dict[dev][intf]:
-                    self.failed("{d}: {name} CRC ERRORS: {e}".format(
-                        d=dev, name=intf, e=mega_dict[dev][intf]))
+        if self.passing==1:
+            self.failed('Some interfaces have CRC errors')
+        else:
+            self.passed
 
-        self.passed("All devices' interfaces CRC ERRORS Count is: 'Zero'")
+# Test created for each interface. If CRC errors then Interface test will fail
+    @aetest.test
+    def interface_check(self, intf):
+        # This test has been marked for loop.  intf is the looping argument (list of interfaces)
+        # Thus this test is run for each interface in the intf list.
+        #for int, errors in self.parent.parameters['mega'].items():
+        for int, errors in self.mega_dict[self.dev.name].items():
+            if errors:
+                self.failed(f'Interface {int} has crc errors {errors}')
+            else:
+                self.passed(f'No errors on {int}')
+
 
 # #####################################################################
 # ####                       COMMON CLEANUP SECTION                 ###
@@ -136,9 +144,11 @@ class common_cleanup(aetest.CommonCleanup):
     # here is an example of 1 subsection
 
     @aetest.subsection
-    def clean_everything(self):
-        """ Common Cleanup Subsection """
-        log.info("Aetest Common Cleanup ")
+
+    def disconnect(self):
+        log.info("Aetest Common Cleanup disconnecting devices")
+        for dev in self.parent.parameters['dev']:
+            dev.disconnect()
 
 
 if __name__ == '__main__':  # pragma: no cover
