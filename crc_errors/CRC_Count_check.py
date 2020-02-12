@@ -47,6 +47,15 @@ class common_setup(aetest.CommonSetup):
         #below creates a loop over the CRC_count_Check Class using dev as the iterator
         aetest.loop.mark(CRC_count_Check, dev=self.parent.parameters['dev'])
 
+
+
+###################################################################
+#                     TESTCASES SECTION                           #
+###################################################################
+
+#Capture Interfaces statistics on the device and tabulate
+#Also look for CRC Errors. If CRC Errors fail then change
+#variable 'passing' from 0 to 1
 class CRC_count_Check(aetest.Testcase):
     @aetest.setup
     def setup(self, dev):
@@ -96,6 +105,8 @@ class CRC_count_Check(aetest.Testcase):
 
         aetest.loop.mark(self.interface_check, intf=list_of_interfaces)
 
+# create table and display. Test fails if variable 'passing' = 1.
+# which means there are some CRC errors
     @aetest.test
     def table_display(self):
         log.info(tabulate(self.parent.parameters['megatable'],
@@ -109,6 +120,7 @@ class CRC_count_Check(aetest.Testcase):
         else:
             self.passed
 
+# Test created for each interface. If CRC errors then Interface test will fail
     @aetest.test
     def interface_check(self, intf):
         # This test has been marked for loop.  intf is the looping argument (list of interfaces)
@@ -120,3 +132,29 @@ class CRC_count_Check(aetest.Testcase):
                 self.passed(f'No errors on {int}')
 
 
+# #####################################################################
+# ####                       COMMON CLEANUP SECTION                 ###
+# #####################################################################
+
+
+# This is how to create a CommonCleanup
+# You can have 0 , or 1 CommonCleanup.
+# CommonCleanup can be named whatever you want :)
+class common_cleanup(aetest.CommonCleanup):
+    """ Common Cleanup for Sample Test """
+
+    # CommonCleanup follow exactly the same rule as CommonSetup regarding
+    # subsection
+    # You can have 1 to as many subsections as wanted
+    # here is an example of 1 subsection
+
+    @aetest.subsection
+
+    def disconnect(self):
+        log.info("Aetest Common Cleanup disconnecting devices")
+        for dev in self.parent.parameters['dev']:
+            dev.disconnect()
+
+
+if __name__ == '__main__':  # pragma: no cover
+    aetest.main()
