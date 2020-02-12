@@ -96,13 +96,6 @@ class CRC_count_Check(aetest.Testcase):
             self.mega_tabular.append(smaller_tabular)
         self.mega_tabular.append(['-' * sum(len(i) for i in smaller_tabular)])
 
-        #pass megadict to interface test function
-        #self.parent.parameters.update(mega=mega_dict[dev.name])
-        #self.megadictname=self.mega_dict[dev.name])
-        #pass megatable list to table_display test function
-       # self.parent.parameters.update(megatable=self.mega_tabular)
-        #pass self.passing variable to table_display function in order indicate pass or fail - 0=pass 1=fail
-        #self.parent.parameters.update(passing=self.passing)
 
         aetest.loop.mark(self.interface_check, intf=list_of_interfaces)
 
@@ -110,7 +103,6 @@ class CRC_count_Check(aetest.Testcase):
 # which means there are some CRC errors
     @aetest.test
     def table_display(self):
-        #log.info(tabulate(self.parent.parameters['megatable'],
         log.info(tabulate(self.mega_tabular,
                           headers=['Device', 'Interface',
                                    'CRC Errors Counter',
