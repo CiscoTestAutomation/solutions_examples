@@ -61,15 +61,15 @@ class CRC_count_Check(aetest.Testcase):
     def setup(self, dev):
         #Setup has been marked for looping in Common Setup(create_testcases) with the argument dev
         #dev is the list of devices in the current testbed
+        self.dev = dev
         log.info(banner(f"Gathering Interface Information from {dev.name}"))
         self.interface_info = dev.learn('interface')
 
-
         list_of_interfaces=self.interface_info.info.keys()
-        mega_dict = {}
-        mega_dict[dev.name] = {}
-        mega_tabular = []
-        passing=0
+        self.mega_dict = {}
+        self.mega_dict[dev.name] = {}
+        self.mega_tabular = []
+        self.passing=0
 
 
         for ints, props in self.interface_info.info.items():
@@ -77,31 +77,32 @@ class CRC_count_Check(aetest.Testcase):
             if counters:
                 smaller_tabular = []
                 if 'in_crc_errors' in counters:
-                    mega_dict[dev.name][ints] = counters['in_crc_errors']
+                    self.mega_dict[dev.name][ints] = counters['in_crc_errors']
                     smaller_tabular.append(dev.name)
                     smaller_tabular.append(ints)
                     smaller_tabular.append(str(counters['in_crc_errors']))
                     if counters['in_crc_errors']:
                         smaller_tabular.append('Failed')
-                        passing=1
+                        self.passing=1
                     else:
                         smaller_tabular.append('Passed')
 
                 else:
-                    mega_dict[dev.name][ints] = None
+                    self.mega_dict[dev.name][ints] = None
                     smaller_tabular.append(dev.name)
                     smaller_tabular.append(ints)
                     smaller_tabular.append('N/A')
                     smaller_tabular.append('N/A')
-            mega_tabular.append(smaller_tabular)
-        mega_tabular.append(['-' * sum(len(i) for i in smaller_tabular)])
+            self.mega_tabular.append(smaller_tabular)
+        self.mega_tabular.append(['-' * sum(len(i) for i in smaller_tabular)])
 
         #pass megadict to interface test function
-        self.parent.parameters.update(mega=mega_dict[dev.name])
+        #self.parent.parameters.update(mega=mega_dict[dev.name])
+        #self.megadictname=self.mega_dict[dev.name])
         #pass megatable list to table_display test function
-        self.parent.parameters.update(megatable=mega_tabular)
-        #pass passing variable to table_display function in order indicate pass or fail - 0=pass 1=fail
-        self.parent.parameters.update(passing=passing)
+       # self.parent.parameters.update(megatable=self.mega_tabular)
+        #pass self.passing variable to table_display function in order indicate pass or fail - 0=pass 1=fail
+        #self.parent.parameters.update(passing=self.passing)
 
         aetest.loop.mark(self.interface_check, intf=list_of_interfaces)
 
@@ -109,13 +110,14 @@ class CRC_count_Check(aetest.Testcase):
 # which means there are some CRC errors
     @aetest.test
     def table_display(self):
-        log.info(tabulate(self.parent.parameters['megatable'],
+        #log.info(tabulate(self.parent.parameters['megatable'],
+        log.info(tabulate(self.mega_tabular,
                           headers=['Device', 'Interface',
                                    'CRC Errors Counter',
                                    'Passed/Failed'],
                           tablefmt='orgtbl'))
 
-        if self.parent.parameters['passing']==1:
+        if self.passing==1:
             self.failed('Some interfaces have CRC errors')
         else:
             self.passed
@@ -125,7 +127,8 @@ class CRC_count_Check(aetest.Testcase):
     def interface_check(self, intf):
         # This test has been marked for loop.  intf is the looping argument (list of interfaces)
         # Thus this test is run for each interface in the intf list.
-        for int, errors in self.parent.parameters['mega'].items():
+        #for int, errors in self.parent.parameters['mega'].items():
+        for int, errors in self.mega_dict[self.dev.name].items():
             if errors:
                 self.failed(f'Interface {int} has crc errors {errors}')
             else:
