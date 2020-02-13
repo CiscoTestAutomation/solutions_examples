@@ -4,7 +4,7 @@ if [ "$#" -ne 1 ]; then
     exit
 fi
 rm -rf archive/ runinfo/
-easypy network_ops_profile.py -html_logs . -testbed_file ../default_testbed.yaml
+pyats run job network_ops_profile.py --html-logs. --testbed-file ../default_testbed.yaml
 ARCHIVE_FILE=`find . -name network_ops_profile*.zip`
 echo $ARCHIVE_FILE
 mkdir -p snapshots

@@ -7,8 +7,8 @@ import json
 from tabulate import tabulate
 
 # Needed for aetest script
-from ats import aetest
-from ats.log.utils import banner
+from pyats import aetest
+from pyats.log.utils import banner
 
 # Genie Imports
 from genie.conf import Genie

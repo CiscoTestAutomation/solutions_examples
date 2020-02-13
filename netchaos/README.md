@@ -4,14 +4,6 @@ Proof of concept Network Chaos Monkey using Cisco VIRL, pyATS, and Genie
 
 > Author: Kevin Corbin @kecorbin
 
-# Requirements
-
-pyATS requires python3 make sure you've installed the requirements in your virtualenv
-
-```
-pip install -r requirements.txt
-```
-
 # Configuration
 
 you should only need to modify the [./mapping_datafile.yaml](./mapping_datafile.yaml) to
@@ -26,7 +18,7 @@ make chaos
 
 # Wait not so fast....
 
-If you're scared - maybe start out with a single [Trigger](https://pubhub.devnetcloud.com/media/pyats-packages/docs/genie/genie_libs/#/triggers)
+If you're scared - maybe start out with a single [Trigger](https://pubhub.devnetcloud.com/media/genie-feature-browser/docs/)
 
 ```
 pyats run job network_chaos_monkey.py --testbed-file default_testbed.yaml --html-logs ./TriggerClearIpMroute.html --trigger TriggerClearIpMroute

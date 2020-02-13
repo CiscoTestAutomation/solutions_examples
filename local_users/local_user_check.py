@@ -1,7 +1,7 @@
 #!/bin/env python
 import logging
-from ats import aetest
-from ats.log.utils import banner
+from pyats import aetest
+from pyats.log.utils import banner
 from genie.conf import Genie
 from genie.libs import ops # noqa
 

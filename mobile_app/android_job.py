@@ -1,6 +1,5 @@
 import os
-from pyats.easypy import run
-def main():
+def main(runtime):
     test_path = os.path.dirname(os.path.abspath(__file__))
     testscript = os.path.join(test_path, 'pyats_android.py')
-    run(testscript=testscript)
+    runtime.tasks.run(testscript=testscript)

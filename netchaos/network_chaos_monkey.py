@@ -1,5 +1,5 @@
 import os
-from ats.datastructures.logic import And, Not, Or
+from pyats.datastructures.logic import And, Not, Or
 from genie.harness.main import gRun
 import argparse
 

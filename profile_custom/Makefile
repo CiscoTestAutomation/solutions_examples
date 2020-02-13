@@ -1,8 +1,8 @@
 before:
-	-easypy network_ops_profile.py -html_logs . -testbed_file ../default_testbed.yaml
+	-pyats run job network_ops_profile.py --html-logs. --testbed-file ../default_testbed.yaml
 	-open TaskLog.html
 after:
-	-easypy network_ops_profile.py -html_logs . -testbed_file ../default_testbed.yaml --after
+	-pyats run job network_ops_profile.py --html-logs. --testbed-file ../default_testbed.yaml --after
 	-open TaskLog.html
 
 clean:
