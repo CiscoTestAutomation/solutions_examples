@@ -42,24 +42,24 @@ Create_Tenant:
               dn: /api/node/class/fvTenant.json
             include:
               - contains('.*%{vars.tenant}.*', regex=True)
-    # - delete_tenant:
-    #     - api:
-    #         device: uut
-    #         function: apic_rest_post
-    #         arguments:
-    #           dn: "/api/node/mo/uni/tn-%{vars.tenant}.json"
-    #           payload: |
-    #             {
-    #               "fvTenant": {
-    #                   "attributes": {
-    #                     "dn": "uni/tn-%{vars.tenant}",
-    #                     "status": "deleted"
-    #                   },
-    #                   "children": []
-    #               }
-    #             }
-    #         include:
-    #           - contains_key_value("totalCount", '0')
+    - delete_tenant:
+        - api:
+            device: uut
+            function: apic_rest_post
+            arguments:
+              dn: "/api/node/mo/uni/tn-%{vars.tenant}.json"
+              payload: |
+                {
+                  "fvTenant": {
+                      "attributes": {
+                        "dn": "uni/tn-%{vars.tenant}",
+                        "status": "deleted"
+                      },
+                      "children": []
+                  }
+                }
+            include:
+              - contains_key_value("totalCount", '0')
     - check_tenant_was_deleted:
         - api:
             device: uut
