@@ -19,7 +19,7 @@ Please check `trigger_datafile.yaml`. The test is written in YAML. So, easy to f
 Please install pyATS|Genie and Rest Connector.
 
 ```
-pip install pyats[full] rest.connector
+pip install 'pyats[full]' rest.connector
 ```
 
 # Running
@@ -75,7 +75,7 @@ Please comment step4(`delete_tenant`).
 
 `check_tenant_was_deleted` step will be failed. but it's fince since we didn't delete. So, it's expected.
 
-And go to https://sandboxapicdc.cisco.com (Please check username/password from `testbed.yaml`). 
+And go to https://sandboxapicdc.cisco.com (Please check username/password from `aci_devnet_sandbox.yaml`). 
 
 After login to APIC, click `Tenants` tab. And then the created tenant should be there.
 
