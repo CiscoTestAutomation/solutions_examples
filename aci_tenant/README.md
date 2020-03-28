@@ -1,8 +1,8 @@
 # Overview
 
-Connect to API via Rest Connecor, and create tenant, check the tenant and delete the tenant. This will check if the tenant exists, or not to make REST API is properly done.
+Connect to API via Rest Connecor, and create tenant, check the tenant and delete the tenant. This will check if the tenant exists, or not to make sure REST API is properly done.
 
-No python code. All is done in YAML by using `Blitz`(Quick Trigger).
+No python knowledge required. All is done in YAML by using `Blitz`(Quick Trigger).
 
 # Steps
 
@@ -16,7 +16,7 @@ Please check `trigger_datafile.yaml`. The test is written in YAML. So, easy to f
 
 # Preparation
 
-Please install pyATS|Genie and Rest Connector.
+Install pyATS|Genie and Rest Connector.
 
 ```
 pip install 'pyats[full]' rest.connector
@@ -37,7 +37,7 @@ pyats run genie --testbed-file aci_devnet_sandbox.yaml --trigger-datafile trigge
 # Try customization in YAML
 
 ### Try #1
-As quick customize, please change `tenant` name under `vars` at top of `trigger_datafile.yaml`.
+As quick customize, change `tenant` name under `vars` at top of `trigger_datafile.yaml`.
 
 ```
 vars:
@@ -46,7 +46,7 @@ vars:
 ```
 ### Try #2
 
-Please comment step4(`delete_tenant`).
+Comment whole step4(`delete_tenant`).
 
 ```
 (snip)
@@ -73,9 +73,9 @@ Please comment step4(`delete_tenant`).
 (snip)
 ```
 
-`check_tenant_was_deleted` step will be failed. but it's fince since we didn't delete. So, it's expected.
+`check_tenant_was_deleted` step will be failed. but it's fine since we didn't delete. So, it's expected.
 
-And go to https://sandboxapicdc.cisco.com (Please check username/password from `aci_devnet_sandbox.yaml`). 
+Go to https://sandboxapicdc.cisco.com (Check username/password from `aci_devnet_sandbox.yaml`). 
 
 After login to APIC, click `Tenants` tab. And then the created tenant should be there.
 
