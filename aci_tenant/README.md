@@ -1,6 +1,6 @@
 # Overview
 
-Connect to API via Rest Connecor, and create tenant, check the tenant and delete the tenant. This will check if the tenant exists, or not to make sure REST API is properly done.
+Connect to APIC via Rest Connecor, and create tenant, check the tenant and delete the tenant. This will check if the tenant exists, or not to make sure REST API is properly done.
 
 No python knowledge required. All is done in YAML by using `Blitz`(Quick Trigger).
 
