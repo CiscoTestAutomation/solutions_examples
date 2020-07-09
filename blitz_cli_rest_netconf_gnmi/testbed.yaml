@@ -1,0 +1,44 @@
+devices:
+    N9Kv1:
+        alias: uut
+        connections:
+            cli:
+                ip: 172.25.195.71
+                port: 9111
+                protocol: telnet
+            rest:
+                class: rest.connector.Rest
+                ip: 127.0.0.1 # mgmt ip
+                port: 80
+                credentials:
+                    rest:
+                        username: <user>
+                        password: <pass>
+            netconf:
+                class: yang.connector.Netconf
+                ip: 127.0.0.1 # mgmt ip
+                port: 830
+                username: <user>
+                password: <pass>
+            gnmi:
+                class: yang.connector.Gnmi
+                protocol: gnmi
+                host: 127.0.0.1 # mgmt ip
+                port: 50051
+                root_certificate: 'server-cert.pem'
+                private_key: ''
+                certificate_chain: ''
+                ssl_name_override: <ssl server>
+        credentials:
+            default:
+                username: <user>
+                password: <pass>
+            enable:
+                password: <pass>
+        custom:
+            abstraction:
+                order: [os, platform]
+        os: nxos
+        platform: n9k
+        type: NX-OSv
+

@@ -1,0 +1,3 @@
+extends:
+  - triggers/shutnoshut.yaml
+  - triggers/key_verification.yaml

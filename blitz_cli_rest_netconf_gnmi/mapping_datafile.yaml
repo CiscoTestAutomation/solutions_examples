@@ -1,0 +1,32 @@
+
+# The mapping datafile tells genie which connections to use and how to map them.
+# Genie will connect to all connections specified in the mapping_datafile. If no
+# mapping datafile is provided then it will use the cli connection by default.
+# -----------------------------------------------------------------------------
+# Below is the schema which explains how the mapping works
+# -----------------------------------------------------------------------------
+
+# devices:
+#
+#    <device name>: # Name of the device.
+#                   # Can either be an alias or device hostname
+#                   # as defined in the pyats testbed file.
+#
+#        mapping:
+#
+#            cli: # Which connection to use for Cli commands.
+#            yang: # Which connection to use for Yang commands.
+#            xml: # Which connection to use for xml commands.
+#            rest: # Which connection to use for rest commands.
+#            netconf: # Which connection to use for netconf commands.
+#            gnmi: # Which connection to use for gnmi commands.
+
+
+
+devices:
+  N9Kv1:
+    mapping:
+      cli: cli # use the cli connection for Cli commands
+      rest: rest # use the rest connection for REST commands
+      netconf: netconf # use the netconf connection for netconf commands
+      gnmi: gnmi # use the gnmi connection for gnmi commands

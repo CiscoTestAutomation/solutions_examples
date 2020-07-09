@@ -1,0 +1,306 @@
+ShutNoShutBgpNeighborCli:
+  source:
+    pkg: genie.libs.sdk
+    class: triggers.blitz.blitz.Blitz
+  groups:
+    - all
+  test_sections:
+    - change_bgp_neighbor_remote_as:
+        - configure:
+            device: N9Kv1
+            command: |
+              router bgp 4000
+              neighbor 10.1.1.2
+              remote-as 4001
+        - sleep:
+            sleep_time: 10
+    - verify_bgp_neighbor_inactive:
+        - parse:
+            device: N9Kv1
+            command: show bgp vrf all all summary
+            exclude:
+              - contains_key_value('neighbor', '10.1.1.2').contains_key_value('state', 'established')
+    - revert_bgp_neighbor_remote_as:
+        - configure:
+            device: N9Kv1
+            command: |
+              router bgp 4000
+              neighbor 10.1.1.2
+              remote-as 4000
+        - sleep:
+            sleep_time: 30
+    - verify_bgp_neighbor_active:
+        - parse:
+            device: N9Kv1
+            command: show bgp vrf all all summary
+            include:
+              - contains_key_value('neighbor', '10.1.1.2').contains_key_value('state', 'established')
+
+ShutNoShutBgpNeighborDme:
+  source:
+    pkg: genie.libs.sdk
+    class: triggers.blitz.blitz.Blitz
+  groups:
+    - all
+  test_sections:
+    - change_bgp_neighbor_remote_as:
+        - api:
+            device: N9Kv1
+            function: nxapi_method_nxapi_rest
+            arguments:
+              alias: rest
+              action: convert
+              input_type: cli
+              commands: |
+                router bgp 4000
+                neighbor 10.1.1.2
+                remote-as 4001
+            save:
+              - variable_name: dme_converted_shut_command
+        - api:
+            device: N9Kv1
+            function: nxapi_method_nxapi_rest
+            arguments:
+              alias: rest
+              action: send
+              commands: '%VARIABLES{dme_converted_shut_command}'
+    - verify_bgp_neighbor_inactive:
+        - api:
+            device: N9Kv1
+            function: nxapi_method_nxapi_rest
+            arguments:
+              alias: rest
+              action: send
+              dn: /api/mo/sys/bgp/inst/dom-default/peer-[10.1.1.2].json
+              rest_method: GET
+            include:
+              - contains_key_value('asn', '4001')
+    - revert_bgp_neighbor_remote_as:
+        - api:
+            device: N9Kv1
+            function: nxapi_method_nxapi_rest
+            arguments:
+              alias: rest
+              action: convert
+              input_type: cli
+              commands: |
+                router bgp 4000
+                neighbor 10.1.1.2
+                remote-as 4000
+            save:
+              - variable_name: dme_converted_no_shut_command
+        - api:
+            device: N9Kv1
+            function: nxapi_method_nxapi_rest
+            arguments:
+              alias: rest
+              action: send
+              commands: '%VARIABLES{dme_converted_no_shut_command}'
+    - verify_bgp_neighbor_active:
+        - api:
+            device: N9Kv1
+            function: nxapi_method_nxapi_rest
+            arguments:
+              alias: rest
+              action: send
+              dn: /api/mo/sys/bgp/inst/dom-default/peer-[10.1.1.2].json
+              rest_method: GET
+            include:
+              - contains_key_value('asn', '4000')
+
+ShutNoShutBgpNeighborNetconf:
+  source:
+    pkg: genie.libs.sdk
+    class: triggers.blitz.blitz.Blitz
+  groups:
+    - all
+  test_sections:
+    - change_bgp_neighbor_remote_as:
+        - yang:
+            device: N9Kv1
+            protocol: netconf
+            connection: netconf
+            datastore: ''
+            operation: rpc
+            content:
+              rpc: |
+                <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="101">
+                	<edit-config>
+                		<target>
+                			<running/>
+                		</target>
+                		<config>
+                			<System xmlns="http://cisco.com/ns/yang/cisco-nx-os-device">
+                                <bgp-items>
+                					<inst-items>
+                						<dom-items>
+                							<Dom-list>
+                								<name>default</name>
+                								<peer-items>
+                									<Peer-list>
+                										<addr>10.1.1.2</addr>
+                										<asn>4001</asn>
+                									</Peer-list>
+                								</peer-items>
+                							</Dom-list>
+                						</dom-items>
+                					</inst-items>
+                				</bgp-items>
+                			</System>
+                		</config>
+                	</edit-config>
+                </rpc>
+        - sleep:
+            sleep_time: 10
+    - verify_bgp_neighbor_inactive:
+        - yang:
+            device: N9Kv1
+            protocol: netconf
+            connection: netconf
+            datastore: ''
+            operation: get
+            content:
+              namespace:
+                nxos_device: http://cisco.com/ns/yang/cisco-nx-os-device
+              nodes:
+                - xpath: /nxos_device:System/nxos_device:bgp-items/nxos_device:inst-items/nxos_device:dom-items/nxos_device:Dom-list/nxos_device:peer-items/nxos_device:Peer-list[addr="10.1.1.2"]/nxos_device:ent-items/nxos_device:PeerEntry-list[addr="10.1.1.2"]/nxos_device:operSt
+            returns:
+              - id: 0
+                name: operSt
+                op: ==
+                selected: true
+                value: idle
+                xpath: /System/bgp-items/inst-items/dom-items/Dom-list/peer-items/Peer-list/ent-items/PeerEntry-list/operSt
+    - revert_bgp_neighbor_remote_as:
+        - yang:
+            device: N9Kv1
+            protocol: netconf
+            connection: netconf
+            datastore: ''
+            operation: rpc
+            content:
+              rpc: |
+                <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="101">
+                    <edit-config>
+                        <target>
+                            <running/>
+                        </target>
+                        <config>
+                            <System xmlns="http://cisco.com/ns/yang/cisco-nx-os-device">
+                                <bgp-items>
+                                    <inst-items>
+                                        <dom-items>
+                                            <Dom-list>
+                                                <name>default</name>
+                                                <peer-items>
+                                                    <Peer-list>
+                                                        <addr>10.1.1.2</addr>
+                                                        <asn>4000</asn>
+                                                    </Peer-list>
+                                                </peer-items>
+                                            </Dom-list>
+                                        </dom-items>
+                                    </inst-items>
+                                </bgp-items>
+                            </System>
+                        </config>
+                    </edit-config>
+                </rpc>
+        - sleep:
+            sleep_time: 30
+    - verify_bgp_neighbor_active:
+        - yang:
+            device: N9Kv1
+            protocol: netconf
+            connection: netconf
+            datastore: ''
+            operation: get
+            content:
+              namespace:
+                nxos_device: http://cisco.com/ns/yang/cisco-nx-os-device
+              nodes:
+                - xpath: /nxos_device:System/nxos_device:bgp-items/nxos_device:inst-items/nxos_device:dom-items/nxos_device:Dom-list/nxos_device:peer-items/nxos_device:Peer-list[addr="10.1.1.2"]/nxos_device:ent-items/nxos_device:PeerEntry-list[addr="10.1.1.2"]/nxos_device:operSt
+            returns:
+              - id: 0
+                name: operSt
+                op: ==
+                selected: true
+                value: established
+                xpath: /System/bgp-items/inst-items/dom-items/Dom-list/peer-items/Peer-list/ent-items/PeerEntry-list/operSt
+ShutNoShutBgpNeighborGnmi:
+  source:
+    pkg: genie.libs.sdk
+    class: triggers.blitz.blitz.Blitz
+  groups:
+    - all
+  test_sections:
+    - change_bgp_neighbor_remote_as:
+        - yang:
+            device: N9Kv1
+            protocol: gnmi
+            connection: gnmi
+            operation: edit-config
+            datastore: ''
+            content:
+              namespace:
+                oc: http://openconfig.net/yang/network-instance
+              nodes:
+                - value: 4001
+                  xpath: /oc:network-instances/oc:network-instance[name="default"]/oc:protocols/oc:protocol[identifier="BGP"][name="bgp"]/oc:bgp/oc:neighbors/oc:neighbor[neighbor-address="10.1.1.2"]/oc:config/oc:peer-as
+                  edit-op: merge
+        - sleep:
+            sleep_time: 10
+    - verify_bgp_neighbor_inactive:
+        - yang:
+            device: N9Kv1
+            protocol: gnmi
+            connection: gnmi
+            operation: get
+            datastore: ''
+            content:
+              namespace:
+                oc: http://openconfig.net/yang/network-instance
+              nodes:
+                - xpath: /oc:network-instances/oc:network-instance[name=default]/oc:protocols/oc:protocol[identifier=BGP][name=bgp]/oc:bgp/oc:neighbors/oc:neighbor[neighbor-address=10.1.1.2]/oc:afi-safis/oc:afi-safi/oc:state/oc:active
+            returns:
+              - id: 0
+                name: active
+                op: ==
+                selected: true
+                value: false
+                xpath: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/afi-safis/afi-safi/state/active
+    - revert_bgp_neighbor_remote_as:
+        - yang:
+            device: N9Kv1
+            protocol: gnmi
+            connection: gnmi
+            operation: edit-config
+            datastore: ''
+            content:
+              namespace:
+                oc: http://openconfig.net/yang/network-instance
+              nodes:
+                - value: 4000
+                  xpath: /oc:network-instances/oc:network-instance[name="default"]/oc:protocols/oc:protocol[identifier="BGP"][name="bgp"]/oc:bgp/oc:neighbors/oc:neighbor[neighbor-address="10.1.1.2"]/oc:config/oc:peer-as
+                  edit-op: merge
+        - sleep:
+            sleep_time: 30
+    - verify_bgp_neighbor_active:
+        - yang:
+            device: N9Kv1
+            protocol: gnmi
+            connection: gnmi
+            operation: get
+            datastore: ''
+            content:
+              namespace:
+                oc: http://openconfig.net/yang/network-instance
+              nodes:
+                - xpath: /oc:network-instances/oc:network-instance[name=default]/oc:protocols/oc:protocol[identifier=BGP][name=bgp]/oc:bgp/oc:neighbors/oc:neighbor[neighbor-address=10.1.1.2]/oc:afi-safis/oc:afi-safi/oc:state/oc:active
+            returns:
+              - id: 0
+                name: active
+                op: ==
+                selected: true
+                value: true
+                xpath: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/afi-safis/afi-safi/state/active

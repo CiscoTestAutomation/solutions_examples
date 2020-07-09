@@ -1,0 +1,63 @@
+VerifyPeerAsNumber:
+  source:
+    pkg: genie.libs.sdk
+    class: triggers.blitz.blitz.Blitz
+  peer_as_number: 4000
+  groups:
+    - all
+  test_sections:
+    - verify_bgp_neighbor_as_number_cli:
+        - parse:
+            device: N9Kv1
+            command: show bgp vrf all all summary
+            include:
+              - contains_key_value('neighbor', '10.1.1.2').contains_key_value('local_as', %{VerifyPeerAsNumber.peer_as_number})
+    - verify_bgp_neighbor_as_number_dme:
+        - api:
+            device: N9Kv1
+            function: nxapi_method_nxapi_rest
+            arguments:
+              alias: rest
+              action: send
+              dn: /api/mo/sys/bgp/inst/dom-default/peer-[10.1.1.2].json
+              rest_method: GET
+            include:
+              - contains_key_value('asn', '%{VerifyPeerAsNumber.peer_as_number}')
+    - verify_bgp_neighbor_as_number_netconf:
+        - yang:
+            device: N9Kv1
+            protocol: netconf
+            connection: netconf
+            datastore: ''
+            operation: get
+            content:
+              namespace:
+                nxos_device: http://cisco.com/ns/yang/cisco-nx-os-device
+              nodes:
+                - xpath: /nxos_device:System/nxos_device:bgp-items/nxos_device:inst-items/nxos_device:dom-items/nxos_device:Dom-list/nxos_device:peer-items/nxos_device:Peer-list[addr="10.1.1.2"]/nxos_device:asn
+            returns:
+              - id: 0
+                name: asn
+                op: ==
+                selected: true
+                value: '%{VerifyPeerAsNumber.peer_as_number}'
+                xpath: /System/bgp-items/inst-items/dom-items/Dom-list/peer-items/Peer-list/asn
+    - verify_bgp_neighbor_as_number_gnmi:
+        - yang:
+            device: N9Kv1
+            protocol: gnmi
+            connection: gnmi
+            operation: get
+            datastore: ''
+            content:
+              namespace:
+                oc: http://openconfig.net/yang/network-instance
+              nodes:
+                - xpath: /oc:network-instances/oc:network-instance[name=default]/oc:protocols/oc:protocol[identifier=BGP][name=bgp]/oc:bgp/oc:neighbors/oc:neighbor[neighbor-address=10.1.1.2]/oc:state/oc:peer-as
+            returns:
+              - id: 0
+                name: peer-as
+                op: ==
+                selected: true
+                value: '%{VerifyPeerAsNumber.peer_as_number}'
+                xpath: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/state/peer-as
