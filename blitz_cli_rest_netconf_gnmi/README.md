@@ -16,3 +16,11 @@ And execute 5 testcases:
 # run with your own device
 pyats run genie --testbed-file testbed.yaml --mapping-datafile mapping_datafile.yaml --trigger-datafile trigger_datafile.yaml  --trigger-groups "And('all')"
 ```
+
+
+## VIEWING ATTACHED LOGS
+
+```
+# source your pyATS env
+pyats logs view logs.zip
+```
