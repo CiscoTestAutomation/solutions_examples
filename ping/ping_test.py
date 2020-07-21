@@ -68,7 +68,10 @@ class ping_class(aetest.Testcase):
                     try:
                         ping = device.ping(ip)
                         pingSuccessRate = ping[(ping.find('percent')-4):ping.find('percent')].strip()
-                        self.ping_results[device_name][ip] = pingSuccessRate
+                        try:
+                            self.ping_results[device_name][ip] = int(pingSuccessRate)
+                        except:
+                            self.ping_results[device_name][ip] = 0
                     except:
                         self.ping_results[device_name][ip] = 0
 
@@ -84,7 +87,7 @@ class ping_class(aetest.Testcase):
                     with device_step.start(
                         f"Checking Ping from {device_name} to {ip}", continue_=True
                     ) as ping_step:
-                        if int(ips[ip]) < 100:
+                        if ips[ip] < 100:
                             device_step.failed(
                             f'Device {device_name} had {ips[ip]}% success pinging {ip}')
 
