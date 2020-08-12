@@ -72,7 +72,11 @@ class BGP_Neighbors_Established(aetest.Testcase):
             abstract = Lookup.from_device(dev)
             bgp = abstract.ops.bgp.bgp.Bgp(dev)
             bgp.learn()
-            self.all_bgp_sessions[dev.name] = bgp.info
+            if hasattr(bgp, 'info'):
+                self.all_bgp_sessions[dev.name] = bgp.info
+            else:
+                self.failed("Failed to learn BGP info from device %s" % dev.name, 
+                            goto=['common_cleanup'])
 
     @ aetest.test
     def check_bgp(self):
@@ -98,7 +102,7 @@ class BGP_Neighbors_Established(aetest.Testcase):
                         failed_dict[device][nbr] = props
                         tr.append('Failed')
 
-                mega_tabular.append(tr)
+                    mega_tabular.append(tr)
 
         log.info(tabulate(mega_tabular,
                           headers=['Device', 'Peer',
