@@ -1,0 +1,17 @@
+devices:
+  APIC:
+    os: apic
+    alias: uut
+    type: apic
+    connections:
+      defaults:
+        via: rest
+      rest:
+        class: rest.connector.Rest
+        host: sandboxapicdc.cisco.com
+        ip: sandboxapicdc.cisco.com
+        port: 443
+        credentials:
+          rest:
+            username: admin
+            password: ciscopsdt
