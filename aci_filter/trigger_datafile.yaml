@@ -1,0 +1,87 @@
+vars:
+  tenant: SnV
+  filter: http
+  filter_entry: pyats-tcp-443
+
+Create_Filter:
+  groups: ["filter"]
+  source:
+    pkg: genie.libs.sdk
+    class: triggers.blitz.blitz.Blitz
+  test_sections:
+    - check_filter_entry_does_not_exist:
+        - api:
+            device: uut
+            function: apic_rest_get
+            arguments:
+              dn: /api/node/class/vzEntry.json
+            exclude:
+              - contains('%{vars.filter_entry}')
+    - check_filter_entry_does_not_exist_in_tenant:
+        - api:
+            device: uut
+            function: apic_rest_get
+            arguments:
+              dn: /api/node/mo/uni/tn-%{vars.tenant}/flt-%{vars.filter}.json
+              query_target: children
+            exclude:
+              - contains('%{vars.filter_entry}')
+    - create_filter_entry_under_tenant:
+        - api:
+            device: uut
+            function: apic_rest_post
+            arguments:
+              dn: "/api/node/mo/uni/tn-%{vars.tenant}/flt-%{vars.filter}/e-%{vars.filter_entry}.json"
+              payload: |
+                {
+                  "vzEntry": {
+                    "attributes": {
+                      "dn": "uni/tn-%{vars.tenant}/flt-%{vars.filter}/e-%{vars.filter_entry}",
+                      "name": "%{vars.filter_entry}",
+                      "etherT": "ip",
+                      "status": "created,modified",
+                      "prot": "tcp",
+                      "dFromPort": "https",
+                      "dToPort": "https",
+                      "rn": "e-%{vars.filter_entry}" 
+                    },
+                    "children":[]
+                  }
+                }
+            include:
+              - contains_key_value("totalCount", '0')
+    - check_filter_entry_exists:
+        - api:
+            device: uut
+            function: apic_rest_get
+            arguments:
+              dn: /api/node/class/vzEntry.json
+            include:
+              - contains('%{vars.filter_entry}')
+    - check_filter_entry_exists_in_tenant:
+        - api:
+            device: uut
+            function: apic_rest_get
+            arguments:
+              dn: /api/node/mo/uni/tn-%{vars.tenant}/flt-%{vars.filter}.json
+              query_target: children
+            include:
+              - contains('%{vars.filter_entry}')
+    # - delete_filter_entry:
+    #     - api:
+    #         device: uut
+    #         function: apic_rest_post
+    #         arguments:
+    #           dn: "/api/node/mo/uni/tn-%{vars.tenant}/flt-%{vars.filter}/e-%{vars.filter_entry}.json"
+    #           payload: |
+    #             {
+    #               "vzEntry": {
+    #                 "attributes": {
+    #                   "dn": "uni/tn-%{vars.tenant}/flt-%{vars.filter}/e-%{vars.filter_entry}",
+    #                   "status": "deleted"
+    #                 },
+    #                 "children": []
+    #               }
+    #             }
+    #         include:
+    #           - contains_key_value("totalCount", '0')
