@@ -1,0 +1,13 @@
+SaveDeviceConfigurationToFile:
+  source:
+    pkg: solutions_examples.save_running_config_to_file
+    class: triggers.SaveDeviceConfigurationToFile
+  exclude_config_that_matches_regex:
+    # Here you can specify the regex that is used to
+    # exclude lines from the returned configuration - per OS
+
+    ios: .*(?:crypto|rf\-profile).*
+    iosxr: .*(?:crypto|rf\-profile).*
+    iosxe: .*(?:crypto|rf\-profile).*
+    nxos: .*(?:crypto|rf\-profile).*
+    # NOTE: More OS' can be added here
