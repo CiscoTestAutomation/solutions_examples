@@ -1,0 +1,23 @@
+cleaners:
+  DeviceClean:
+    module: genie.libs.clean
+    # List of devices to clean goes here
+    devices: [<device_name>]
+
+devices:
+  # The device name
+  <device_name>:
+
+    # This is the connect stage
+    connect:
+
+    # This is the apply_configuration stage
+    apply_configuration:
+      configuration_from_file: </path/to/config_backup_<dev>.txt>
+      config_timeout: 120
+
+    # The order we want to run the stages in
+    order:    
+        - 'connect'
+        - 'apply_configuration'
+
