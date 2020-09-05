@@ -29,12 +29,19 @@ class SaveDeviceConfigurationToFile(Trigger):
                             "configuration.\nError: {}".format(str(e)))
 
             step.passed("Gathered the running configuration for: {}".format(
-                [name for name, _ in configurations]))
+                [name for name, config in configurations if isinstance(config, str)]))
 
         with steps.start("Saving all running configurations that were "
                          "gathered"):
 
             for dev, config in configurations:
+
+                # Skip any devices where the api to gather the running
+                # config does not exist
+                if isinstance(config, AttributeError):
+                    log.warning(config)
+                    continue
+
                 filename = 'config_backup_{}.txt'.format(dev)
 
                 with open(filename, 'w') as f:
@@ -54,6 +61,9 @@ class SaveDeviceConfigurationToFile(Trigger):
 
             Returns:
                 (device name ('str'), configuration ('str'))
+
+                if api not found:
+                (device name ('str'), exception ('exception'))
         """
 
         exclude = exclude.get(dev.os)
@@ -61,6 +71,11 @@ class SaveDeviceConfigurationToFile(Trigger):
         log.info("The following regex is used to exclude lines of "
                  "configuration for '{}' devices: {}"
                  .format(dev.os, exclude))
+        try:
+            out = dev.api.get_valid_config_from_running_config(exclude=exclude)
+        except AttributeError:
+            return dev.name, AttributeError("Cannot get the config from '{}'. "
+                                            "The API is not developed for '{}'"
+                                            .format(dev.name, dev.os))
 
-        out = dev.api.get_valid_config_from_running_config(exclude=exclude)
         return dev.name, out
