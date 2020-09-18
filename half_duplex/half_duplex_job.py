@@ -23,11 +23,6 @@ def main(runtime):
 
     # run script
     run(
-        testscript=os.path.join(SCRIPT_PATH, "testbed_connection.py"),
-        runtime=runtime,
-        taskid="Device Connections",
-    )
-    run(
         testscript=os.path.join(SCRIPT_PATH, "half_duplex.py"),
         runtime=runtime,
         taskid="Half Duplex",
