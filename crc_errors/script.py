@@ -52,7 +52,7 @@ class common_setup(aetest.CommonSetup):
         '''
         # use device name as iterator for clarity in testcase name reporting
         aetest.loop.mark(CRC_Count_Check, 
-                         device = [d.name for d in testbed])
+                         device = [d.name for d in testbed if d.os in ('ios', 'iosxe', 'iosxr', 'nxos')])
 
 ###################################################################
 #                     TESTCASES SECTION                           #
