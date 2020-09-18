@@ -59,7 +59,8 @@ class running_vs_startup(aetest.Testcase):
         self.configs = {}
         for device_name, device in testbed.devices.items():
             # Only attempt to learn details on supported network operation systems
-            if device.os in ("ios", "iosxe", "iosxr", "nxos"):
+            # (does not work for IOSXR)
+            if device.os in ("ios", "iosxe", "nxos"):
                 logger.info(f"{device_name} connected status: {device.connected}")
                 logger.info(f"Learning configs for {device_name}")
                 startup = device.execute("show startup")
