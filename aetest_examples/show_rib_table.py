@@ -14,7 +14,6 @@ from genie.testbed import load
 from genie import parsergen
 from genie.utils import Dq
 from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
-from customjob import Aetest_Inputs
 
 
 
