@@ -6,9 +6,9 @@ The job file imports the custombits module which references a customize.yaml fil
 
 The customize.yaml file can contain any AeTest scripts which you wish to execute instead of hard coding into the actual job file itself
 
-Within customize.yaml is a list of PING targets showing that you add inputs into a YAML file and change them withot touching the source code itself
+Within customize.yaml is a list of PING targets showing that you add inputs into a YAML file and change them without touching the source code itself
 
-A mock device is included in the repo to allow you to test this setup
+
 
 # Running
 
