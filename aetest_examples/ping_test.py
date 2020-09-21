@@ -76,7 +76,7 @@ class connectivity_status_checks(aetest.Testcase):
                             output = self.execute_ping[device_name]
                             output = output.replace('\r\n','\n')
                             match = re.search(r'Success rate is (?P<rate>\d+) percent', output)
-                            success_rate = match.group('rate')
+                            success_rate = int(match.group('rate'))
                             logger.info(f' The success rate of the PING was {success_rate}')
                             if success_rate == 100:
                                 
