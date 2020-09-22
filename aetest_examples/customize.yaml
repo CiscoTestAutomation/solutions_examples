@@ -1,0 +1,43 @@
+
+
+Jobs:
+
+  Script1 :
+    index: 1 
+    name: show_lpts_police.py  
+    taskid: Check the Control Plane LPTS Policer for Drops
+
+  Script2 :
+    index: 2
+    name: show_processes_cpu.py
+    taskid: Check the CPU is not higher than 75 percent over 5 minutes
+  
+  Script3 :
+    index: 3
+    name: show_rib_table.py
+    taskid: Check the RIB Table entries are not equal to Zero
+
+  Script4 :
+    index: 4
+    name: ping_test.py
+    taskid: Run a PING Test using the targets identified below
+
+Ping_Dest:
+
+ dest1 :
+    index: 1 
+    vrf: default  
+    destination: 192.168.1.254
+    count: 10
+
+ dest2 :
+    index: 2 
+    vrf: default  
+    destination: 192.168.1.212 
+    count: 5
+
+ dest3 :
+    index: 3 
+    vrf: default  
+    destination: 192.168.1.214
+    count: 3
