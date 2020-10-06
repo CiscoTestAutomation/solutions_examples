@@ -87,7 +87,9 @@ class BGP_Neighbors_Established(aetest.Testcase):
         for device, bgp in self.all_bgp_sessions.items():
             # may need to change based on BGP config
             default = bgp['instance']['default']['vrf']['default']
-            neighbors = default['neighbor']
+            # If no neighbor for default VRF, then set the neighbors value to {}
+            neighbors = default.get('neighbor', {})
+            
             for nbr, props in neighbors.items():
                 state = props.get('session_state')
                 if state:
