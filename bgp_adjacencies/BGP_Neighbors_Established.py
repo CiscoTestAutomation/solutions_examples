@@ -85,29 +85,35 @@ class BGP_Neighbors_Established(aetest.Testcase):
         failed_dict = {}
         mega_tabular = []
         for device, bgp in self.all_bgp_sessions.items():
+
             # may need to change based on BGP config
-            default = bgp['instance']['default']['vrf']['default']
-            neighbors = default['neighbor']
-            for nbr, props in neighbors.items():
-                state = props.get('session_state')
-                if state:
-                    tr = []
-                    tr.append(device)
-                    tr.append(nbr)
-                    tr.append(state)
-                    if state.lower() == 'established':
-                        tr.append('Passed')
-                    else:
-                        failed_dict[device] = {}
-                        failed_dict[device][nbr] = props
-                        tr.append('Failed')
+            vrfs_dict = bgp['instance']['default']['vrf']
 
-                    mega_tabular.append(tr)
+            for vrf_name, vrf_dict in vrfs_dict.items():
 
-        log.info(tabulate(mega_tabular,
-                          headers=['Device', 'Peer',
-                                   'State', 'Pass/Fail'],
-                          tablefmt='orgtbl'))
+                # If no neighbor for default VRF, then set the neighbors value to {}
+                neighbors = vrf_dict.get('neighbor', {})
+                for nbr, props in neighbors.items():
+                    state = props.get('session_state')
+                    if state:
+                        tr = []
+                        tr.append(vrf_name)
+                        tr.append(nbr)
+                        tr.append(state)
+                        if state.lower() == 'established':
+                            tr.append('Passed')
+                        else:
+                            failed_dict[device] = {}
+                            failed_dict[device][nbr] = props
+                            tr.append('Failed')
+
+                        mega_tabular.append(tr)
+
+                log.info("Device {d} Table:\n".format(d=device))
+                log.info(tabulate(mega_tabular,
+                                  headers=['VRF', 'Peer',
+                                           'State', 'Pass/Fail'],
+                                  tablefmt='orgtbl'))
 
         if failed_dict:
             log.error(json.dumps(failed_dict, indent=3))
