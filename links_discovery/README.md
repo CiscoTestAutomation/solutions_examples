@@ -5,5 +5,5 @@ Configure CDP on the neighbor devices on the target device, and write neighbor t
 ## Running
 
 ```
-python links-discovery.py --target-device nx-osv-1 --testbed-file testbed.yaml
+python links_discovery.py --target-device nx-osv-1 --testbed-file testbed.yaml
 ```
