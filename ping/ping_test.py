@@ -17,7 +17,7 @@ from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
 logger = logging.getLogger(__name__)
 
 # List of addresses to ping:
-ping_list = ['208.67.222.222', '8.8.8.8', '1.1.1.1']
+#ping_list = ['208.67.222.222', '8.8.8.8', '1.1.1.1']
 
 ###################################################################
 #                  COMMON SETUP SECTION                           #
@@ -45,7 +45,7 @@ class CommonSetup(aetest.CommonSetup):
         #   By default ANY error in the CommonSetup will fail the entire test run
         #   Here we catch common exceptions if a device is unavailable to allow test to continue
         try:
-            testbed.connect()
+            testbed.connect(learn_hostname=True, connection_timeout=2)
         except (TimeoutError, StateMachineError, ConnectionError):
             logger.error("Unable to connect to all devices")
 
@@ -55,8 +55,11 @@ class CommonSetup(aetest.CommonSetup):
 
 class ping_class(aetest.Testcase):
     @aetest.setup
-    def setup(self, testbed):
+    def setup(self, testbed, ping_list):
         """ Make sure devices can ping a list of addresses. """
+        #Create an array of destination IPs from our argparse
+        ping_list = ping_list.split()
+
         self.ping_results = {}
         for device_name, device in testbed.devices.items():
             # Only attempt to ping on supported network operation systems
@@ -120,8 +123,15 @@ if __name__ == "__main__":
         # type=Genie.init,
         default=None,
     )
+    parser.add_argument(
+        "--dest",
+        dest = "ping_list",
+        type=str,
+        default = "208.67.222.222 8.8.8.8 1.1.1.1",
+        help = "space delimted list of IP address(es) to test connectivity"
+    )
 
     # do the parsing
     args = parser.parse_known_args()[0]
 
-    aetest.main(testbed=args.testbed)
+    aetest.main(testbed=args.testbed, ping_list=args.ping_list)
