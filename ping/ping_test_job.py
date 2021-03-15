@@ -14,7 +14,7 @@ from pyats.easypy import run
 # command line argument parser
 # see https://pubhub.devnetcloud.com/media/pyats/docs/easypy/jobfile.html#custom-arguments
 parser = argparse.ArgumentParser()
-    parser.add_argument(
+parser.add_argument(
         "--dest",
         dest = "ping_list",
         type=str,
