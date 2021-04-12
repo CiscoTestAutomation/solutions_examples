@@ -39,12 +39,12 @@ You can visit our [documentation](https://developer.cisco.com/docs/pyats/) for m
 
 ## VIRL Simulation
 
-We've provided a [topology.virl](./topology.virl) file for you to test with.
+Many of the examples refers to the DevNet Always-On Sandbox devices. If preferred to use local VIRL file with the examples, an example_testbed.virl file can be downloaded [here](https://pubhub.devnetcloud.com/media/genie-docs/docs/userguide/examples/virl.html#). 
 
 ## Testbed configuration
 
-We've provided a [default_testbed.yaml](./testedbed.yaml) to go along with the
-sample topology.  you'll likely need to change it to match your devices
+We've provided a [default_testbed.yaml](./testedbed.yaml) and [devnet_sandbox.yaml](./devnet_sandbox.yaml) to go along with the 
+sample topology. Please double check for the latest IP and hostname information. 
 
 ## Notable Examples
 
