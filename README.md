@@ -43,7 +43,7 @@ Many of the examples refers to the DevNet Always-On Sandbox devices. If preferre
 
 ## Testbed configuration
 
-We've provided a [default_testbed.yaml](./testedbed.yaml) and [devnet_sandbox.yaml](./devnet_sandbox.yaml) to go along with the 
+We've provided a [default_testbed.yaml](./default_testbed.yaml) and [devnet_sandbox.yaml](./devnet_sandbox.yaml) to go along with the 
 sample topology. Please double check for the latest IP and hostname information. 
 
 ## Notable Examples
