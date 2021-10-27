@@ -14,4 +14,4 @@ devices:
         credentials:
           rest:
             username: admin
-            password: ciscopsdt
+            password: "%ENC{wpHDr8KUwrvCs8KAwpjCpcK_}"
