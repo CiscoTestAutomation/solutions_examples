@@ -1,0 +1,41 @@
+
+devices:
+  8000-1:
+    connections:
+      cli:
+        ip: 192.168.0.2
+        protocol: ssh
+        arguments:
+          init_config_commands: [ ]
+    credentials:
+      default:
+        password: 'cisco'
+        username: cisco
+    os: iosxr
+    type: spitfire
+  8000-2:
+    connections:
+      cli:
+        ip: 192.168.0.3
+        protocol: ssh
+        arguments:
+          init_config_commands: [ ]
+    credentials:
+      default:
+        password: 'cisco'
+        username: cisco
+    os: iosxr
+    type: spitfire
+  8000-3:
+    connections:
+      cli:
+        ip: 192.168.0.3
+        protocol: ssh
+        arguments:
+          init_config_commands: [ ]
+    credentials:
+      default:
+        password: 'cisco'
+        username: cisco
+    os: iosxr
+    type: spitfire

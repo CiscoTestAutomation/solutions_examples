@@ -1,0 +1,41 @@
+Audit_v8K_ISIS:
+  message:
+      |
+      Audit Steps
+          1. Connect
+          2. Check ISIS Neighbors
+
+  devices:
+      - 8000-2
+  isis_interfaces:
+      - FH0/0/0/0
+      - FH0/0/0/1
+  groups:
+      - trigger
+      - isis
+  source:
+    class: audit_8K_isis.TriggerAudit
+
+Audit_v8K_BGP:
+  message:
+      |
+      Audit Steps
+          1. Connect
+          2. Check MP-BGP Prefixes AFI IPv4 Unicast
+          3. Check MP-BGP Prefixes AFI IPv6 Unicast
+          4. Check MP-BGP Prefixes AFI VPNv4 Unicast
+          5. Check MP-BGP Prefixes AFI VPNv4 Unicast
+
+  devices:
+      - 8000-2
+  groups:
+      - trigger
+      - bgp
+  prefix_threshold: 0
+  source:
+    class: audit_8K_bgp.TriggerAudit
+
+
+
+
+
