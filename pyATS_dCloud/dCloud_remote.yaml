@@ -43,7 +43,7 @@ devices:
   8000-3:
     connections:
       cli:
-        ip: 192.168.0.3
+        ip: 192.168.0.4
         protocol: ssh
         proxy: jump_host
         arguments:
