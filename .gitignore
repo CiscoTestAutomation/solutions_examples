@@ -106,3 +106,4 @@ venv.bak/
 # VSCode
 .vscode
 .history
+.DS_Store
