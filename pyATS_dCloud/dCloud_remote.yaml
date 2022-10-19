@@ -1,0 +1,56 @@
+
+devices:
+  jump_host:
+    connections:
+      mgmt:
+        ip: "%ENV{VXR_HOST}"
+        port: 10104
+        protocol: ssh
+    os: linux
+    type: linux
+    credentials:
+      default:
+        password: pyats2022
+        username: cisco
+  8000-1:
+    connections:
+      cli:
+        ip: 192.168.0.2
+        protocol: ssh
+        proxy: jump_host
+        arguments:
+          init_config_commands: [ ]
+    credentials:
+      default:
+        password: 'cisco'
+        username: cisco
+    os: iosxr
+    type: spitfire
+  8000-2:
+    connections:
+      cli:
+        ip: 192.168.0.3
+        protocol: ssh
+        proxy: jump_host
+        arguments:
+          init_config_commands: [ ]
+    credentials:
+      default:
+        password: 'cisco'
+        username: cisco
+    os: iosxr
+    type: spitfire
+  8000-3:
+    connections:
+      cli:
+        ip: 192.168.0.4
+        protocol: ssh
+        proxy: jump_host
+        arguments:
+          init_config_commands: [ ]
+    credentials:
+      default:
+        password: 'cisco'
+        username: cisco
+    os: iosxr
+    type: spitfire
